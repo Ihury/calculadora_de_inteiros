@@ -361,22 +361,26 @@ int subtracao(BigInt *l1, BigInt *l2, BigInt *l3){
     
 
     No *n = maior(l1,l2)->inicio; //pega o maior número
-    No *m;
+    No *m, *extra;
+
+    int a = 0;
 
     if(n == l1->inicio) m = l2->inicio; //m pega o outro número
-    else m = l1->inicio;
-
-    No *extra;
+    else {
+        m = l1->inicio;
+        a = 1;
+    }
 
     int s;
 
     while (n != NULL && m != NULL)
     {
+        extra = n;
         if(n->valor >= m->valor || n->prox == NULL) s = n->valor - m->valor; //se o dígito for maior igual do que o dígito do subtraendo, então s é o digíto menos o outro
         else {
             do {
-                extra = n->prox; //extra vai até o primeiro dígito diferente de 0
-            }while (n->valor == 0);
+                extra = extra->prox; //extra vai até o primeiro dígito diferente de 0
+            }while (extra->valor == 0);
 
             extra->valor--; //subtraí 1 dele
 
@@ -399,6 +403,8 @@ int subtracao(BigInt *l1, BigInt *l2, BigInt *l3){
         inserirFim(l3,n->valor);
         n = n->prox;
     }
+
+    if(a) trocaSinal(l3);
 
     return 0;
 }
