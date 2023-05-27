@@ -404,7 +404,7 @@ int subtracao(BigInt *l1, BigInt *l2, BigInt *l3){
         n = n->prox;
     }
 
-    if(a) trocaSinal(l3);
+    if(a) trocaSinal(l3); //se o maior número era o subtraendo quer dizer que a subtração foi feita "ao contrário", por isso precisamos inverter o resultado
 
     return 0;
 }
