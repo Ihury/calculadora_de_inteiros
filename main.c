@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "lista.h"
-#include "lista.c"
 
 int main()
 {
@@ -9,7 +8,6 @@ int main()
 
     int x;
 
-    printf("Digite o primeiro numero:\n");
     do
     {
         scanf("%d", &x);
@@ -27,7 +25,6 @@ int main()
 
     BigInt *l2 = criar();
 
-    printf("Digite o segundo numero:\n");
     do
     {
         scanf("%d", &x);
