@@ -385,13 +385,17 @@ int soma(BigInt *l1, BigInt *l2, BigInt *l3)
         return 2;
     if (checaSinal(l1) == 1 && checaSinal(l2) == -1)
     {
-        trocaSinal(l2);
-        return subtracao(l1, l2, l3);
+        BigInt *l4 = criar();
+        copia(l2, l4);
+        trocaSinal(l4);
+        return subtracao(l1, l4, l3);
     }
     if (checaSinal(l1) == -1 && checaSinal(l2) == 1)
     {
-        trocaSinal(l1);
-        return subtracao(l2, l1, l3);
+        BigInt *l4 = criar();
+        copia(l1, l4);
+        trocaSinal(l4);
+        return subtracao(l2, l4, l3);
     }
 
     No *n = l1->inicio;
@@ -438,20 +442,21 @@ int subtracao(BigInt *l1, BigInt *l2, BigInt *l3)
         return 2;
     if (checaSinal(l1) == 1 && checaSinal(l2) == -1)
     {
-        trocaSinal(l2);
-        return soma(l1, l2, l3);
+        BigInt *l4 = criar();
+        copia(l2, l4);
+        trocaSinal(l4);
+        return soma(l1, l4, l3);
     }
     if (checaSinal(l1) == -1 && checaSinal(l2) == -1)
     {
-        trocaSinal(l2);
-        trocaSinal(l1);
-        return subtracao(l2, l1, l3);
-    }
-    if (checaSinal(l1) == -1 && checaSinal(l2) == 1)
-    {
-        trocaSinal(l2);
-        return soma(l1, l2, l3);
-    }
+        BigInt *l4 = criar();
+        copia(l2, l4);
+        trocaSinal(l4);
+        BigInt *l5 = criar();
+        copia(l1, l5);
+        trocaSinal(l5);
+        return subtracao(l4, l5, l3);
+    }    
 
     No *n = maior(l1, l2)->inicio; // pega o maior número
     No *m, *extra;
@@ -543,22 +548,22 @@ BigInt *maior(BigInt *l1, BigInt *l2)
     }
 }
 
-BigInt *copia(BigInt *l)
+int copia(BigInt *l1, BigInt *l2)
 {
-    if (l != NULL)
+    if (l1 != NULL)
     {
-        BigInt *f = criar();
-
-        No *n = l->inicio;
+        No *n = l1->inicio;
 
         while (n != NULL)
         {
-            inserirFim(f, n->valor);
+            inserirFim(l2, n->valor);
             n = n->prox;
         }
 
-        return f;
+        return 0;
     }
+
+    return 1;
 }
 
 int trocaSinal(BigInt *l)

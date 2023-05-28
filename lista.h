@@ -23,6 +23,7 @@ int tamanho(BigInt *l);
 int checaSinal(BigInt *l);
 int converteSinal(BigInt *l);
 void mostrar(BigInt *l);
+int copia(BigInt *l1, BigInt *l2);
 int trocaSinal(BigInt *l);
 int removeZero(BigInt *l);
 BigInt *maior(BigInt *l1, BigInt *l2);

@@ -43,14 +43,20 @@ void lerNumero(BigInt *l)
     int length = strlen(input);
     for (int i = 0; i < length; i++)
     {
+        if (i == 0 && input[i] == '-') // se o primeiro caractere for um sinal de negativo, ele ignora
+        {
+            continue;
+        }
         int digit = input[i] - '0'; // converte o caractere para inteiro
 
-        if (digit < 10 && digit > -10)
+        if (i == 1 && input[0] == '-') // se o primeiro caractere for um sinal de negativo, ele transforma o digito em negativo
         {
-            if (inserirInicio(l, digit))
-            {
-                return; // se o número for de apenas um digito, ele adiciona no numero, senão ele sai
-            }
+            digit *= -1;
+        }
+
+        if (inserirInicio(l, digit))
+        {
+            return; // se o número for de apenas um digito, ele adiciona no numero, senão ele sai
         }
     }
 
