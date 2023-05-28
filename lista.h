@@ -4,17 +4,17 @@ typedef struct no No;
 BigInt *criar();
 void limpar(BigInt *l);
 
-int inserirInicio(BigInt *l,int it);
-int inserirFim(BigInt *l,int it);
-int inserirPosicao(BigInt *l,int it,int pos);
+int inserirInicio(BigInt *l, int it);
+int inserirFim(BigInt *l, int it);
+int inserirPosicao(BigInt *l, int it, int pos);
 
 int removerInicio(BigInt *l);
 int removerFim(BigInt *l);
-int removerPosicao(BigInt *l,int pos);
-int removerItem(BigInt *l,int it);
+int removerPosicao(BigInt *l, int pos);
+int removerItem(BigInt *l, int it);
 
-int buscarItemChave(BigInt *l,int chave,int *retorno);
-int buscarPosicao(BigInt *l, int pos,No *retorno);
+int buscarItemChave(BigInt *l, int chave, int *retorno);
+int buscarPosicao(BigInt *l, int pos, No *retorno);
 
 int listaVazia(BigInt *l);
 int listaCheia(BigInt *l);
