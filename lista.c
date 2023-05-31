@@ -456,7 +456,7 @@ int subtracao(BigInt *l1, BigInt *l2, BigInt *l3)
         copia(l1, l5);
         trocaSinal(l5);
         return subtracao(l4, l5, l3);
-    }    
+    }
 
     No *n = maior(l1, l2)->inicio; // pega o maior número
     No *m, *extra;
@@ -598,3 +598,58 @@ int checaSinal(BigInt *l)
         n = n->prox;
     }
 }
+
+int multiplicacao(BigInt *l1, BigInt *l2, BigInt *l3) {
+    if (l3 == NULL || l1 == NULL || l2 == NULL)
+        return 1;
+
+    if (listaVazia(l1) || listaVazia(l2)) {
+        inserirInicio(l3, 0); // Se uma das listas for vazia, o resultado da multiplicação é zero
+        return 2;
+    }
+
+    BigInt *temp = criar(); // Variável temporária para armazenar o resultado parcial da multiplicação
+    int zeros = 0;
+
+    No *n = l2->inicio;
+    while (n != NULL) {
+        int digito = n->valor;
+
+        // Realiza a multiplicação de l1 por um único dígito de l2
+        limpar(temp); // Limpa o resultado parcial
+        int carry = 0;
+
+        No *m = l1->inicio;
+        while (m != NULL) {
+            int produto = (m->valor * digito) + carry;
+            int digito_resultado = produto % 10;
+            carry = produto / 10;
+            inserirFim(temp, digito_resultado);
+            m = m->prox;
+        }
+
+        if (carry > 0) {
+            inserirFim(temp, carry); // Insere o carry se houver
+        }
+
+        // Adiciona zeros à direita, de acordo com a posição do dígito em l2
+        for (int i = 0; i < zeros; i++) {
+            inserirInicio(temp, 0);
+        }
+
+        // Soma o resultado parcial à lista final
+        BigInt *soma_temp = criar();
+        soma(l3, temp, soma_temp);
+        limpar(l3);
+        copia(soma_temp, l3);
+        limpar(soma_temp);
+
+        zeros++;
+        n = n->prox;
+    }
+
+   limpar(temp);
+
+   return 0;
+}
+

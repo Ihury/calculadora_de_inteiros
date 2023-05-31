@@ -11,22 +11,32 @@ int main()
     BigInt *l2 = criar();
     BigInt *l3 = criar();
     BigInt *l4 = criar();
+    BigInt *l5 = criar();
 
     lerNumero(l1);
     lerNumero(l2);
 
+    printf("Subtracao: ");
     subtracao(l1, l2, l3);
     removeZero(l3);
     mostrar(l3);
 
+    printf("Soma: ");
     soma(l1, l2, l4);
     removeZero(l4);
     mostrar(l4);
+
+    printf("Multiplicacao: ");
+    multiplicacao(l1, l2, l5);
+    printf("Multiplicado!\n");
+    removeZero(l5);
+    mostrar(l5);
 
     limpar(l1);
     limpar(l2);
     limpar(l3);
     limpar(l4);
+    limpar(l5);
 
     system("pause");
 

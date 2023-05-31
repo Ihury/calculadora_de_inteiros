@@ -30,3 +30,4 @@ BigInt *maior(BigInt *l1, BigInt *l2);
 
 int soma(BigInt *l1, BigInt *l2, BigInt *l3);
 int subtracao(BigInt *l1, BigInt *l2, BigInt *l3);
+int multiplicacao(BigInt *l1, BigInt *l2, BigInt *l3);
