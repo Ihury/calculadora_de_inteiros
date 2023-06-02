@@ -4,37 +4,43 @@
 #include "lista.h"
 
 void lerNumero(BigInt *l);
+int multiplicacaoSimples(BigInt *l1, int m, BigInt *l3);
+int multiplicacao(BigInt *l1, BigInt *l2, BigInt *l3);
 
-int main()
-{
+int main() {
     BigInt *l1 = criar();
     BigInt *l2 = criar();
     BigInt *l3 = criar();
-    BigInt *l4 = criar();
 
     lerNumero(l1);
     lerNumero(l2);
 
-    subtracao(l1, l2, l3);
-    removeZero(l3);
-    mostrar(l3);
+    //subtracao(l1, l2, l3);
+    //mostrar(l3);
+    //while(listaVazia(l3) != 0) removerInicio(l3);
 
-    soma(l1, l2, l4);
-    removeZero(l4);
-    mostrar(l4);
+    //soma(l1, l2, l3);
+    //mostrar(l3);
+    //while(listaVazia(l3) != 0) removerInicio(l3);
+    //removeZero(l3);
+    
+    //copia(l1,l3);
+    //l3 = maior(l1,l2);
+    //printf("%d", checaSinal(l1));
+
+    multiplicacao(l1, l2, l3);
+    mostrar(l3);
 
     limpar(l1);
     limpar(l2);
     limpar(l3);
-    limpar(l4);
 
     system("pause");
 
     return 0;
 }
 
-void lerNumero(BigInt *l)
-{
+void lerNumero(BigInt *l) {
     char input[100]; // tamanho máximo da entrada
 
     printf("Digite um numero:\n");
@@ -63,4 +69,68 @@ void lerNumero(BigInt *l)
     removeZero(l);    // remove os zeros a esquerda
     converteSinal(l); // se o primeiro numero digitado for negativo, transforma os outros digitos em negativos
     mostrar(l);
+}
+
+int multiplicacaoSimples(BigInt *l1, int m, BigInt *l2){
+    if(l1 == NULL || l2 == NULL) return 1;
+    if(listaVazia(l1) == 0) return 2;
+    if(m == 1){
+        copia(l1,l2);
+        return 0;
+    }
+    if(m == 0){
+        inserirFim(l2, 0);
+        return 0;
+    }
+
+    int p, n, carry = 0, i = 0;
+
+    while(i < tamanho(l1)){
+        buscarPosicao(l1, i, &n);
+        p = n * m;
+        inserirFim(l2,(p%10) + carry);
+        carry = p/10;
+        i++;
+    }
+
+    if(carry) inserirFim(l2, carry);
+
+    return 0;
+}
+
+
+int multiplicacao(BigInt *l1, BigInt *l2, BigInt *l3){
+     if (l3 == NULL || l1 == NULL || l2 == NULL)
+        return 1;
+
+    BigInt *temp = criar();
+    BigInt *soma_temp = criar();
+
+    int zeros = 0;
+    int i = 0;
+    int m;
+
+    while(i < tamanho(l2)){
+        while(listaVazia(soma_temp) != 0) removerInicio(soma_temp);
+        copia(l3,soma_temp);
+        while(listaVazia(l3) != 0) removerInicio(l3);
+        while(listaVazia(temp) != 0) removerInicio(temp);
+
+        for(int j = 0; j < zeros; j++){
+            inserirFim(temp,0);
+        }
+
+        buscarPosicao(l2,i,&m);
+
+        multiplicacaoSimples(l1,m,temp);
+        soma(soma_temp,temp,l3);
+
+        i++;
+        zeros++;
+    }
+
+    limpar(temp);
+    limpar(soma_temp);
+
+    return 0;
 }

@@ -14,7 +14,7 @@ int removerPosicao(BigInt *l, int pos);
 int removerItem(BigInt *l, int it);
 
 int buscarItemChave(BigInt *l, int chave, int *retorno);
-int buscarPosicao(BigInt *l, int pos, No *retorno);
+int buscarPosicao(BigInt *l, int pos, int *retorno);
 
 int listaVazia(BigInt *l);
 int listaCheia(BigInt *l);

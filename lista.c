@@ -64,7 +64,7 @@ int tamanho(BigInt *l)
 
 void mostrar(BigInt *l)
 {
-    if (l != NULL)
+    if (l != NULL && listaVazia(l) != 0)
     {
         printf("[");
 
@@ -264,7 +264,7 @@ int removerItem(BigInt *l, int it)
     return 0;
 }
 
-int buscarPosicao(BigInt *l, int pos, No *retorno)
+int buscarPosicao(BigInt *l, int pos, int *retorno)
 {
     if (l == NULL)
         return 1;
@@ -272,7 +272,7 @@ int buscarPosicao(BigInt *l, int pos, No *retorno)
         return 2;
     if (pos == 0)
     {
-        retorno = l->inicio;
+        *retorno = l->inicio->valor;
         return 0;
     }
 
@@ -287,7 +287,7 @@ int buscarPosicao(BigInt *l, int pos, No *retorno)
 
     if (pos == posicao)
     {
-        retorno = n;
+        *retorno = n->valor;
         return 0;
     }
 
@@ -388,14 +388,18 @@ int soma(BigInt *l1, BigInt *l2, BigInt *l3)
         BigInt *l4 = criar();
         copia(l2, l4);
         trocaSinal(l4);
-        return subtracao(l1, l4, l3);
+        subtracao(l1, l4, l3);
+        limpar(l4);
+        return 0;
     }
     if (checaSinal(l1) == -1 && checaSinal(l2) == 1)
     {
         BigInt *l4 = criar();
         copia(l1, l4);
         trocaSinal(l4);
-        return subtracao(l2, l4, l3);
+        subtracao(l2, l4, l3);
+        limpar(l4);
+        return 0;
     }
 
     No *n = l1->inicio;
@@ -440,34 +444,44 @@ int subtracao(BigInt *l1, BigInt *l2, BigInt *l3)
         return 1;
     if (l1 == NULL || l2 == NULL)
         return 2;
-    if (checaSinal(l1) == 1 && checaSinal(l2) == -1)
+    
+    BigInt *l4 = criar();
+
+    if ((checaSinal(l1) == 1 && checaSinal(l2) == -1) || (checaSinal(l1) == -1 && checaSinal(l2) == 1))
     {
-        BigInt *l4 = criar();
         copia(l2, l4);
         trocaSinal(l4);
-        return soma(l1, l4, l3);
+        soma(l1, l4, l3);
+        limpar(l4);
+        return 0;
     }
+
     if (checaSinal(l1) == -1 && checaSinal(l2) == -1)
     {
-        BigInt *l4 = criar();
         copia(l2, l4);
         trocaSinal(l4);
         BigInt *l5 = criar();
         copia(l1, l5);
         trocaSinal(l5);
-        return subtracao(l4, l5, l3);
-    }    
+        subtracao(l4, l5, l3);
+        limpar(l4);
+        limpar(l5);
+        return 0;
+    }
 
-    No *n = maior(l1, l2)->inicio; // pega o maior número
+    printf("%d", copia(l1,l4));
+    mostrar(l4);
+
+    No *n = maior(l4, l2)->inicio; // pega o maior número
     No *m, *extra;
 
     int a = 0;
 
-    if (n == l1->inicio)
+    if (n == l4->inicio)
         m = l2->inicio; // m pega o outro número
     else
     {
-        m = l1->inicio;
+        m = l4->inicio;
         a = 1;
     }
 
@@ -512,6 +526,8 @@ int subtracao(BigInt *l1, BigInt *l2, BigInt *l3)
     if (a)
         trocaSinal(l3); // se o maior número era o subtraendo quer dizer que a subtração foi feita "ao contrário", por isso precisamos inverter o resultado
 
+    limpar(l4);
+
     return 0;
 }
 
@@ -519,6 +535,10 @@ BigInt *maior(BigInt *l1, BigInt *l2)
 {
     if (l1 != NULL && l2 != NULL)
     {
+        if(checaSinal(l1) == 1 && checaSinal(l2) == -1) 
+            return l1; // se l1 é positivo e l2 é negativo, l1 é maior
+        if(checaSinal(l1) == -1 && checaSinal(l2) == 1) 
+            return l2; // se l2 é positivo e l1 negativo, l2 é maior
         if (tamanho(l1) > tamanho(l2))
             return l1; // se o tamanho de uma das listas for maior, então essa é a lista maior
         if (tamanho(l1) < tamanho(l2))
@@ -550,20 +570,20 @@ BigInt *maior(BigInt *l1, BigInt *l2)
 
 int copia(BigInt *l1, BigInt *l2)
 {
-    if (l1 != NULL)
+    if (l1 == NULL)
+        return 1;
+    if (listaVazia(l1) == 0)
+        return 2;
+
+    No *n = l1->inicio;
+
+    while (n != NULL)
     {
-        No *n = l1->inicio;
-
-        while (n != NULL)
-        {
-            inserirFim(l2, n->valor);
-            n = n->prox;
-        }
-
-        return 0;
+        inserirFim(l2, n->valor);
+        n = n->prox;
     }
 
-    return 1;
+    return 0;
 }
 
 int trocaSinal(BigInt *l)
@@ -588,13 +608,10 @@ int checaSinal(BigInt *l)
 {
     if (l == NULL || listaVazia(l) == 0)
         return 0;
-    No *n = l->inicio;
-    while (n != NULL)
-    {
-        if (n->valor > 0)
-            return 1;
-        if (n->valor < 0)
-            return -1;
-        n = n->prox;
-    }
+    int n;
+    buscarPosicao(l,tamanho(l) - 1, &n);
+    if(n >= 0)
+        return 1;
+    else
+        return -1;
 }
