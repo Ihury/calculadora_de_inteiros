@@ -94,7 +94,7 @@ void mostrar(BigInt *l)
             }
         }
 
-        printf("]\n");
+        printf("]");
     }
 }
 
@@ -409,8 +409,8 @@ int soma(BigInt *l1, BigInt *l2, BigInt *l3)
 
     while (n != NULL && m != NULL)
     {
-        s = n->valor + m->valor;
-        inserirFim(l3, (s % 10) + r); // insere o primeiro dígito da soma de dois digítos da lista mais o resto da última soma
+        s = n->valor + m->valor + r;
+        inserirFim(l3, (s % 10)); // insere o primeiro dígito da soma de dois digítos da lista mais o resto da última soma
 
         r = s / 10; // resto da soma
 
@@ -469,8 +469,7 @@ int subtracao(BigInt *l1, BigInt *l2, BigInt *l3)
         return 0;
     }
 
-    printf("%d", copia(l1,l4));
-    mostrar(l4);
+    copia(l1,l4);
 
     No *n = maior(l4, l2)->inicio; // pega o maior número
     No *m, *extra;
@@ -574,12 +573,13 @@ int copia(BigInt *l1, BigInt *l2)
         return 1;
     if (listaVazia(l1) == 0)
         return 2;
+    if(listaVazia(l2) != 0)
+        return 3;
 
     No *n = l1->inicio;
 
-    while (n != NULL)
-    {
-        inserirFim(l2, n->valor);
+    while(n != NULL){
+        inserirFim(l2,n->valor);
         n = n->prox;
     }
 

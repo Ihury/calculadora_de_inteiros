@@ -1,49 +1,137 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "lista.h"
 
 void lerNumero(BigInt *l);
+void menu();
 int multiplicacaoSimples(BigInt *l1, int m, BigInt *l3);
 int multiplicacao(BigInt *l1, BigInt *l2, BigInt *l3);
 
 int main() {
     BigInt *l1 = criar();
     BigInt *l2 = criar();
-    BigInt *l3 = criar();
+    BigInt *l3;
+
+    printf(" ________________________\n");
+    printf("|                        |\n");
+    printf("|       CALCULADORA      |\n");
+    printf("|________________________|\n\n");
 
     lerNumero(l1);
     lerNumero(l2);
+    sleep(1);
 
-    //subtracao(l1, l2, l3);
-    //mostrar(l3);
-    //while(listaVazia(l3) != 0) removerInicio(l3);
+    char op;
 
-    //soma(l1, l2, l3);
-    //mostrar(l3);
-    //while(listaVazia(l3) != 0) removerInicio(l3);
-    //removeZero(l3);
-    
-    //copia(l1,l3);
-    //l3 = maior(l1,l2);
-    //printf("%d", checaSinal(l1));
 
-    multiplicacao(l1, l2, l3);
-    mostrar(l3);
+    do{
+        if(listaVazia(l1) == 0 || listaVazia(l2) == 0){
+            printf("Erro!");
+            break;
+        }
+
+        l3 = criar();
+        system("cls");
+        setbuf(stdin, NULL);
+
+        menu();
+        scanf("%c", &op);
+
+        sleep(1);
+        system("cls");
+
+        switch (op)
+        {
+        case '1':
+            lerNumero(l1);
+            lerNumero(l2);
+            sleep(1);
+            break;
+        case '2':
+            printf("Primeiro operando: ");
+            mostrar(l1);
+            printf("\nSegundo operando: ");
+            mostrar(l2);
+            break;
+        case '3':
+            l3 = maior(l1,l2);
+            printf("Maior operando: ");
+            mostrar(l3);
+            l3 = NULL;
+            break;
+        case  '4':
+            l3 = maior(l1,l2);
+            printf("Menor operando: ");
+            if(l3 == l1) mostrar(l2);
+            else mostrar(l1);
+            l3 = NULL;
+            break;
+        case '5':
+            printf("Ate mais!...");
+            sleep(1);
+            break;
+        case '+':
+            soma(l1, l2, l3);
+            mostrar(l1);
+            printf(" + ");
+            mostrar(l2);
+            printf(" = ");
+            mostrar(l3);
+            limpar(l3);
+            break;
+        case '-':
+            subtracao(l1, l2, l3);
+            mostrar(l1);
+            printf(" - ");
+            mostrar(l2);
+            printf(" = ");
+            mostrar(l3);
+            limpar(l3);
+            break;
+        case '*':
+            multiplicacao(l1, l2, l3);
+            mostrar(l1);
+            printf(" * ");
+            mostrar(l2);
+            printf(" = ");
+            mostrar(l3);
+            limpar(l3);
+            break;
+        default:
+            break;
+        }
+
+        printf("\n");
+        system("pause");
+    }while(op != '5');
 
     limpar(l1);
     limpar(l2);
     limpar(l3);
 
-    system("pause");
-
     return 0;
+}
+
+void menu(){
+    printf(" ________________________\n");
+    printf("|                        |\n");
+    printf("|          MENU          |\n");
+    printf("|________________________|\n\n");
+    printf("\n1 - Inserir novos operandos\n");
+    printf("2 - Checar operandos atuais\n");
+    printf("3 - Imprimir maior operando\n");
+    printf("4 - Imprimir menor operando\n");
+    printf("5 - Sair\n");
+    printf("Digite simbolos aritmeticos para efetuar operacao(+,-,*,/)\n");
+    printf("Opcao: ");
 }
 
 void lerNumero(BigInt *l) {
     char input[100]; // tamanho máximo da entrada
 
-    printf("Digite um numero:\n");
+    printf("\nDigite um numero:\n");
     scanf("%s", input);
 
     int length = strlen(input);
@@ -87,8 +175,8 @@ int multiplicacaoSimples(BigInt *l1, int m, BigInt *l2){
 
     while(i < tamanho(l1)){
         buscarPosicao(l1, i, &n);
-        p = n * m;
-        inserirFim(l2,(p%10) + carry);
+        p = (n * m)  + carry;
+        inserirFim(l2,(p%10));
         carry = p/10;
         i++;
     }
