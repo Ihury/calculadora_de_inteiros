@@ -8,6 +8,8 @@ void lerNumero(BigInt *l);
 void menu();
 int multiplicacaoSimples(BigInt *l1, int m, BigInt *l3);
 int multiplicacao(BigInt *l1, BigInt *l2, BigInt *l3);
+int divisaoBase(BigInt *l1, BigInt *l2, BigInt  *l3);
+int resto(BigInt *l1, BigInt *l2, BigInt  *l3);
 
 int main() {
     BigInt *l1 = criar();
@@ -45,6 +47,8 @@ int main() {
         switch (op)
         {
         case '1':
+            while(listaVazia(l1) != 0) removerInicio(l1);
+            while(listaVazia(l2) != 0) removerInicio(l2);
             lerNumero(l1);
             lerNumero(l2);
             sleep(1);
@@ -83,6 +87,7 @@ int main() {
             break;
         case '-':
             subtracao(l1, l2, l3);
+            removeZero(l3);
             mostrar(l1);
             printf(" - ");
             mostrar(l2);
@@ -94,6 +99,24 @@ int main() {
             multiplicacao(l1, l2, l3);
             mostrar(l1);
             printf(" * ");
+            mostrar(l2);
+            printf(" = ");
+            mostrar(l3);
+            limpar(l3);
+            break;
+        case '/':
+            divisaoBase(l1, l2, l3);
+            mostrar(l1);
+            printf(" / ");
+            mostrar(l2);
+            printf(" = ");
+            mostrar(l3);
+            limpar(l3);
+            break;
+        case '%':
+            resto(l1, l2, l3);
+            mostrar(l1);
+            printf(" %% ");
             mostrar(l2);
             printf(" = ");
             mostrar(l3);
@@ -188,8 +211,10 @@ int multiplicacaoSimples(BigInt *l1, int m, BigInt *l2){
 
 
 int multiplicacao(BigInt *l1, BigInt *l2, BigInt *l3){
-     if (l3 == NULL || l1 == NULL || l2 == NULL)
+    if (l3 == NULL || l1 == NULL || l2 == NULL)
         return 1;
+    if (listaVazia(l1) == 0 || listaVazia(l2) == 0)
+        return 2;
 
     BigInt *temp = criar();
     BigInt *soma_temp = criar();
@@ -219,6 +244,189 @@ int multiplicacao(BigInt *l1, BigInt *l2, BigInt *l3){
 
     limpar(temp);
     limpar(soma_temp);
+
+    return 0;
+}
+
+int divisaoBase(BigInt *l1, BigInt *l2, BigInt  *l3){
+    if (l3 == NULL || l1 == NULL || l2 == NULL)
+        return 1;
+    if (listaVazia(l1) == 0 || listaVazia(l2) == 0)
+        return 2;
+
+    int n, m;
+
+    buscarPosicao(l2,tamanho(l2) - 1,&n);
+
+    if(n == 0)
+        return 3;
+
+    if (checaSinal(l1) == -1 && checaSinal(l2) == -1)
+    {
+        BigInt *l4 = criar();
+        copia(l2, l4);
+        trocaSinal(l4);
+        BigInt *l5 = criar();
+        copia(l1, l5);
+        trocaSinal(l5);
+        divisaoBase(l4, l5, l3);
+        limpar(l4);
+        limpar(l5);
+        return 0;
+    }
+    if (checaSinal(l1) == 1 && checaSinal(l2) == -1)
+    {
+        BigInt *l4 = criar();
+        copia(l2, l4);
+        trocaSinal(l4);
+        divisaoBase(l1, l4, l3);
+        trocaSinal(l3);
+        limpar(l4);
+        return 0;
+    }
+    if (checaSinal(l1) == -1 && checaSinal(l2) == 1)
+    {
+        BigInt *l4 = criar();
+        copia(l1, l4);
+        trocaSinal(l4);
+        divisaoBase(l4, l2, l3);
+        trocaSinal(l3);
+        limpar(l4);
+        return 0;
+    }
+
+    buscarPosicao(l1,tamanho(l1) - 1,&m);
+
+    if(m == 0 || maior(l1,l2) == l2){
+        inserirFim(l3, 0);
+        return 0;
+    }
+
+    if((tamanho(l2) - 1 == 0) && n == 1){
+        copia(l1,l3);
+        return 0;
+    }
+
+    BigInt *sub_temp = criar();
+    BigInt *temp = criar();
+    BigInt *one = criar();
+    BigInt *tempSoma = criar();
+    inserirFim(one,1);
+    copia(l1,sub_temp);
+    inserirFim(l3,0);
+
+    while(maior(sub_temp,l2) == sub_temp){
+        subtracao(sub_temp,l2,temp);
+        soma(l3,one,tempSoma);
+        removeZero(temp);
+
+        //limpa da soma do quociente
+        while(listaVazia(l3) != 0) removerInicio(l3);
+        copia(tempSoma,l3);
+        while(listaVazia(tempSoma) != 0) removerInicio(tempSoma);
+
+        //limpa da divisao
+        while(listaVazia(sub_temp) != 0) removerInicio(sub_temp);
+        copia(temp,sub_temp);
+        while(listaVazia(temp) != 0) removerInicio(temp);
+    }
+
+    limpar(sub_temp);
+    limpar(temp);
+    limpar(one);
+    limpar(tempSoma);
+
+    return 0;
+}
+
+int resto(BigInt *l1, BigInt *l2, BigInt  *l3){
+    if (l3 == NULL || l1 == NULL || l2 == NULL)
+        return 1;
+    if (listaVazia(l1) == 0 || listaVazia(l2) == 0)
+        return 2;
+
+    int n,m;
+
+    buscarPosicao(l2,tamanho(l2) - 1,&n);
+
+    if(n == 0)
+        return 3;
+
+        if (checaSinal(l1) == -1 && checaSinal(l2) == -1)
+    {
+        BigInt *l4 = criar();
+        copia(l2, l4);
+        trocaSinal(l4);
+        BigInt *l5 = criar();
+        copia(l1, l5);
+        trocaSinal(l5);
+        resto(l4, l5, l3);
+        limpar(l4);
+        limpar(l5);
+        return 0;
+    }
+    if (checaSinal(l1) == 1 && checaSinal(l2) == -1)
+    {
+        BigInt *l4 = criar();
+        copia(l2, l4);
+        trocaSinal(l4);
+        resto(l1, l4, l3);
+        trocaSinal(l3);
+        limpar(l4);
+        return 0;
+    }
+    if (checaSinal(l1) == -1 && checaSinal(l2) == 1)
+    {
+        BigInt *l4 = criar();
+        copia(l1, l4);
+        trocaSinal(l4);
+        resto(l4, l2, l3);
+        trocaSinal(l3);
+        limpar(l4);
+        return 0;
+    }
+
+    buscarPosicao(l1,tamanho(l1) - 1,&m);
+
+    if(m == 0 || ((tamanho(l2) - 1 == 0) && n == 1)){
+        inserirFim(l3, 0);
+        return 0;
+    }
+
+    if(maior(l1,l2) == l2){
+        copia(l1,l3);
+        return 0;
+    }
+
+    BigInt *quo_temp = criar();
+    BigInt *temp = criar();
+    BigInt *one = criar();
+    BigInt *tempSoma = criar();
+
+    inserirFim(one,1);
+    copia(l1,l3);
+    inserirFim(l3,0);
+
+    while(maior(l3,l2) == l3){
+        subtracao(l3,l2,temp);
+        soma(quo_temp,one,tempSoma);
+        removeZero(temp);
+
+        //limpa da soma do quociente
+        while(listaVazia(quo_temp) != 0) removerInicio(quo_temp);
+        copia(tempSoma,quo_temp);
+        while(listaVazia(tempSoma) != 0) removerInicio(tempSoma);
+
+        //limpa da divisao
+        while(listaVazia(l3) != 0) removerInicio(l3);
+        copia(temp,l3);
+        while(listaVazia(temp) != 0) removerInicio(temp);
+    }
+
+    limpar(quo_temp);
+    limpar(temp);
+    limpar(one);
+    limpar(tempSoma);
 
     return 0;
 }

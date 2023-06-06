@@ -77,8 +77,7 @@ void mostrar(BigInt *l)
 
         printf("%d", n->valor);
 
-        if (n->valor > 0)
-        {
+        if (n->valor >= 0){
             while (n->ant != NULL)
             {
                 n = n->ant;
@@ -474,14 +473,14 @@ int subtracao(BigInt *l1, BigInt *l2, BigInt *l3)
     No *n = maior(l4, l2)->inicio; // pega o maior número
     No *m, *extra;
 
-    int a = 0;
+    int ordem = 0;
 
     if (n == l4->inicio)
         m = l2->inicio; // m pega o outro número
     else
     {
         m = l4->inicio;
-        a = 1;
+        ordem = 1;
     }
 
     int s;
@@ -498,7 +497,7 @@ int subtracao(BigInt *l1, BigInt *l2, BigInt *l3)
                 extra = extra->prox; // extra vai até o primeiro dígito diferente de 0
             } while (extra->valor == 0);
 
-            extra->valor--; // subtraí 1 dele
+            extra->valor--; // subtrai 1 dele
 
             while (extra->ant != n)
             { // passa pelos anteriores somando 10 e subtraindo 1 até chegar no digíto original
@@ -522,7 +521,7 @@ int subtracao(BigInt *l1, BigInt *l2, BigInt *l3)
         n = n->prox;
     }
 
-    if (a)
+    if (ordem)
         trocaSinal(l3); // se o maior número era o subtraendo quer dizer que a subtração foi feita "ao contrário", por isso precisamos inverter o resultado
 
     limpar(l4);
