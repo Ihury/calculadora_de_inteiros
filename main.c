@@ -186,22 +186,27 @@ int multiplicacaoSimples(BigInt *l1, int m, BigInt *l2){
     if(l1 == NULL || l2 == NULL) return 1;
     if(listaVazia(l1) == 0) return 2;
     if(m == 1){
+        //se o número for multiplicado por 1, o produto é ele mesmo 
         copia(l1,l2);
         return 0;
     }
     if(m == 0){
+        //se o número for multiplicado por 0, o produto é 0
         inserirFim(l2, 0);
         return 0;
     }
 
-    int p, n, carry = 0, i = 0;
+    int p, //produto
+    n,     //dígito do primeiro fator
+    carry = 0,
+    i = 0; //posição do dígito
 
     while(i < tamanho(l1)){
-        buscarPosicao(l1, i, &n);
-        p = (n * m)  + carry;
-        inserirFim(l2,(p%10));
-        carry = p/10;
-        i++;
+        buscarPosicao(l1, i, &n); //pega o dígito na posição i
+        p = (n * m)  + carry;     //produto é o dígito vezes o segundo fator mais o carry
+        inserirFim(l2,(p%10));    //insere o primeiro dígito do resultado na lista
+        carry = p/10;             //o resto do resultado fica como carry
+        i++;                      //vai pro próximo digito até a posição ser igual ao tamanho do primeiro fator
     }
 
     if(carry) inserirFim(l2, carry);
@@ -219,27 +224,27 @@ int multiplicacao(BigInt *l1, BigInt *l2, BigInt *l3){
     BigInt *temp = criar();
     BigInt *soma_temp = criar();
 
-    int zeros = 0;
-    int i = 0;
-    int m;
+    int zeros = 0,
+    i = 0,          //posicao do dígito do segundo fator
+    m;              //dígito do segundo fator
 
     while(i < tamanho(l2)){
-        while(listaVazia(soma_temp) != 0) removerInicio(soma_temp);
-        copia(l3,soma_temp);
-        while(listaVazia(l3) != 0) removerInicio(l3);
-        while(listaVazia(temp) != 0) removerInicio(temp);
+        while(listaVazia(soma_temp) != 0) removerInicio(soma_temp);     //limpa o número que estava em soma_temp
+        copia(l3,soma_temp);                                            //coloca o produto de l3 de volta pra soma_temp
+        while(listaVazia(l3) != 0) removerInicio(l3);                   //limpa l3
+        while(listaVazia(temp) != 0) removerInicio(temp);               //limpa o produto da multiplicaoSimples
 
         for(int j = 0; j < zeros; j++){
-            inserirFim(temp,0);
+            inserirFim(temp,0); //insere zeros de acordo com o dígito do segundo fator
         }
 
-        buscarPosicao(l2,i,&m);
+        buscarPosicao(l2,i,&m); //pega o dígito do segundo fator de acordo com a posição i, isso continua até que i seja igual ao tamanho do segundo fator
 
-        multiplicacaoSimples(l1,m,temp);
-        soma(soma_temp,temp,l3);
+        multiplicacaoSimples(l1,m,temp); //multiplica o primeiro fator pelo dígito
+        soma(soma_temp,temp,l3);         //soma esse resultado com o produto que temos até então e coloca em l3
 
-        i++;
-        zeros++;
+        i++;        //vai pro próximo dígito
+        zeros++;    //aumenta o número de zeros
     }
 
     limpar(temp);
@@ -258,7 +263,7 @@ int divisaoBase(BigInt *l1, BigInt *l2, BigInt  *l3){
 
     buscarPosicao(l2,tamanho(l2) - 1,&n);
 
-    if(n == 0)
+    if(n == 0)      //se o denominador é 0, retorna 3
         return 3;
 
     if (checaSinal(l1) == -1 && checaSinal(l2) == -1)
@@ -298,12 +303,12 @@ int divisaoBase(BigInt *l1, BigInt *l2, BigInt  *l3){
     buscarPosicao(l1,tamanho(l1) - 1,&m);
 
     if(m == 0 || maior(l1,l2) == l2){
-        inserirFim(l3, 0);
+        inserirFim(l3, 0);  //se o dividendo é 0, ou se o denominador é maior que o dividendo, o quociente é 0
         return 0;
     }
 
     if((tamanho(l2) - 1 == 0) && n == 1){
-        copia(l1,l3);
+        copia(l1,l3);   //se o denominador é 1, o quociente é o próprio dividendo
         return 0;
     }
 
@@ -315,19 +320,19 @@ int divisaoBase(BigInt *l1, BigInt *l2, BigInt  *l3){
     copia(l1,sub_temp);
     inserirFim(l3,0);
 
-    while(maior(sub_temp,l2) == sub_temp){
-        subtracao(sub_temp,l2,temp);
-        soma(l3,one,tempSoma);
+    while(maior(sub_temp,l2) == sub_temp){//enquanto o dividendo for maior que o denominador
+        subtracao(sub_temp,l2,temp);      //subtrai o dividendo pelo denominador
+        soma(l3,one,tempSoma);            //soma 1 no quociente
         removeZero(temp);
 
         //limpa da soma do quociente
         while(listaVazia(l3) != 0) removerInicio(l3);
-        copia(tempSoma,l3);
+        copia(tempSoma,l3);     //passa o quociente para l3 para o próximo loop ou pra retornar
         while(listaVazia(tempSoma) != 0) removerInicio(tempSoma);
 
         //limpa da divisao
         while(listaVazia(sub_temp) != 0) removerInicio(sub_temp);
-        copia(temp,sub_temp);
+        copia(temp,sub_temp);   //passa o resto para o próximo loop
         while(listaVazia(temp) != 0) removerInicio(temp);
     }
 
@@ -349,7 +354,7 @@ int resto(BigInt *l1, BigInt *l2, BigInt  *l3){
 
     buscarPosicao(l2,tamanho(l2) - 1,&n);
 
-    if(n == 0)
+    if(n == 0)      //se o denominador é 0, retorna 3
         return 3;
 
         if (checaSinal(l1) == -1 && checaSinal(l2) == -1)
@@ -389,12 +394,12 @@ int resto(BigInt *l1, BigInt *l2, BigInt  *l3){
     buscarPosicao(l1,tamanho(l1) - 1,&m);
 
     if(m == 0 || ((tamanho(l2) - 1 == 0) && n == 1)){
-        inserirFim(l3, 0);
+        inserirFim(l3, 0);  //se o dividendo for 0 ou se o denominador for 1, o resto vai ser 0
         return 0;
     }
 
     if(maior(l1,l2) == l2){
-        copia(l1,l3);
+        copia(l1,l3);       //se o dividendo for maior que o denominador, o resto vai ser o dividendo
         return 0;
     }
 
@@ -407,19 +412,19 @@ int resto(BigInt *l1, BigInt *l2, BigInt  *l3){
     copia(l1,l3);
     inserirFim(l3,0);
 
-    while(maior(l3,l2) == l3){
-        subtracao(l3,l2,temp);
-        soma(quo_temp,one,tempSoma);
+    while(maior(l3,l2) == l3){       //enquanto o dividendo for maior que o denominador
+        subtracao(l3,l2,temp);       //subtrai o dividendo pelo denominador
+        soma(quo_temp,one,tempSoma); //soma 1 no quociente
         removeZero(temp);
 
         //limpa da soma do quociente
         while(listaVazia(quo_temp) != 0) removerInicio(quo_temp);
-        copia(tempSoma,quo_temp);
+        copia(tempSoma,quo_temp);   //passa o quociente para o próximo loop
         while(listaVazia(tempSoma) != 0) removerInicio(tempSoma);
 
         //limpa da divisao
         while(listaVazia(l3) != 0) removerInicio(l3);
-        copia(temp,l3);
+        copia(temp,l3);     //passa o resto para o próximo loop ou para o retorno
         while(listaVazia(temp) != 0) removerInicio(temp);
     }
 
