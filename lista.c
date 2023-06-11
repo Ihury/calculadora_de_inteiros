@@ -542,24 +542,19 @@ BigInt *maior(BigInt *l1, BigInt *l2)
         if (tamanho(l1) < tamanho(l2))
             return l2;
 
-        No *n = l1->inicio;
-        No *m = l2->inicio;
+        int n, m, i = tamanho(l1) - 1;
 
-        while (n->prox != NULL && m->prox != NULL)
+        while (i > 0)
         { // vai até o último digíto
-            m = m->prox;
-            n = n->prox;
-        }
-
-        while (n != NULL && m != NULL)
-        {
-            if (n->valor > m->valor)
-                return l1; // Compara cada digíto até que ache um digíto maior que o outro, assim retornando a lista com o dígito maior
-            if (n->valor < m->valor)
+            buscarPosicao(l1,i,&n);
+            buscarPosicao(l2,i,&m);
+            
+            if(n > m)
+                return l1;
+            if(m > n)
                 return l2;
 
-            n = n->ant;
-            m = m->ant;
+            i--;
         }
 
         return l1; // se os números forem iguais, retorna l1
@@ -572,14 +567,13 @@ int copia(BigInt *l1, BigInt *l2)
         return 1;
     if (listaVazia(l1) == 0)
         return 2;
-    if(listaVazia(l2) != 0)
-        return 3;
 
-    No *n = l1->inicio;
+    int n, i = 0;
 
-    while(n != NULL){
-        inserirFim(l2,n->valor);
-        n = n->prox;
+    while(i < tamanho(l1)){
+        buscarPosicao(l1,i,&n);
+        inserirFim(l2,n);
+        i++;
     }
 
     return 0;

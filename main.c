@@ -10,6 +10,7 @@ int multiplicacaoSimples(BigInt *l1, int m, BigInt *l3);
 int multiplicacao(BigInt *l1, BigInt *l2, BigInt *l3);
 int divisaoBase(BigInt *l1, BigInt *l2, BigInt  *l3);
 int resto(BigInt *l1, BigInt *l2, BigInt  *l3);
+int fatorial(BigInt *l1, BigInt *l2);
 
 int main() {
     BigInt *l1 = criar();
@@ -29,14 +30,15 @@ int main() {
 
 
     do{
-        if(listaVazia(l1) == 0 || listaVazia(l2) == 0){
-            printf("Erro!");
-            break;
-        }
-
         l3 = criar();
         system("cls");
         setbuf(stdin, NULL);
+
+        if(listaVazia(l1) == 0 || listaVazia(l2) == 0){
+            printf("Erro!");
+            sleep(1);
+            break;
+        }
 
         menu();
         scanf("%c", &op);
@@ -72,9 +74,39 @@ int main() {
             else mostrar(l1);
             l3 = NULL;
             break;
-        case '5':
+        case  '5':
+            do
+            {
+                printf("Inverter:\n(1).Operando 1\n(2).Operando 2\nOpcao: ");
+                scanf("%c", &op);
+                if(op == '1') {
+                    trocaSinal(l1);
+                    mostrar(l1);
+                } else if(op == '2') {
+                    trocaSinal(l2);
+                    mostrar(l2);
+                }
+                    
+                if(op != '1' && op != '2'){
+                    printf("Opcao invalida!");
+                    sleep(1);
+                    system("cls");
+                }
+            } while (op != '1' && op != '2');
+            break;
+        case '6':
             printf("Ate mais!...");
-            sleep(1);
+            break;
+        case '7'://LEMBRAR DE APAGAR || TESTE DA COPIAR
+            copia(l1,l3);
+            mostrar(l3);
+            break;
+        case '!':
+            mostrar(l1);
+            printf("! = ");
+            fatorial(l1,l3);
+            mostrar(l3);
+            limpar(l3);
             break;
         case '+':
             soma(l1, l2, l3);
@@ -123,12 +155,13 @@ int main() {
             limpar(l3);
             break;
         default:
+            printf("Opcao invalida");
             break;
         }
 
         printf("\n");
         system("pause");
-    }while(op != '5');
+    }while(op != '6');
 
     limpar(l1);
     limpar(l2);
@@ -146,8 +179,10 @@ void menu(){
     printf("2 - Checar operandos atuais\n");
     printf("3 - Imprimir maior operando\n");
     printf("4 - Imprimir menor operando\n");
-    printf("5 - Sair\n");
-    printf("Digite simbolos aritmeticos para efetuar operacao(+,-,*,/)\n");
+    printf("5 - Inverte o sinal de um operando\n");
+    printf("6 - Sair\n");
+    printf("Digite simbolos aritmeticos para efetuar operacao(+,-,*,/,%%)\n");
+    printf("! - fatorial do primeiro número\n");
     printf("Opcao: ");
 }
 
@@ -432,6 +467,53 @@ int resto(BigInt *l1, BigInt *l2, BigInt  *l3){
     limpar(temp);
     limpar(one);
     limpar(tempSoma);
+
+    return 0;
+}
+
+int fatorial(BigInt *l1, BigInt *l2){
+    if(l1 == NULL)
+        return 1;
+    if(l2 == NULL)
+        return 2;
+
+    int m;
+
+    buscarPosicao(l1,tamanho(l1) - 1,&m);
+
+    if(m == 0 || ((tamanho(l1) - 1 == 0) && m == 1)){
+        inserirFim(l2,1);
+        return 0;
+    }
+
+    BigInt *diminui = criar(), *temp = criar(), *one = criar();
+
+    inserirFim(one,1);
+    copia(l1,temp);
+    subtracao(l1,one,diminui);
+
+    while(m != 0){     
+        multiplicacao(temp,diminui,l2);
+
+        while(listaVazia(temp) != 0) removerInicio(temp);
+        copia(l2,temp);
+        while(listaVazia(l2) != 0) removerInicio(l2);
+
+        subtracao(diminui,one,l2);
+        removeZero(l2);
+
+        while(listaVazia(diminui) != 0) removerInicio(diminui);
+        copia(l2,diminui);
+        while(listaVazia(l2) != 0) removerInicio(l2);
+
+        buscarPosicao(diminui,tamanho(diminui) - 1,&m);
+    }
+
+    copia(temp,l2);
+    
+    limpar(diminui);
+    limpar(one);
+    limpar(temp);
 
     return 0;
 }
