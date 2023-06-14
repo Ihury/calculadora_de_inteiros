@@ -66,8 +66,6 @@ void mostrar(BigInt *l)
 {
     if (l != NULL && listaVazia(l) != 0)
     {
-        printf("[");
-
         No *n = l->inicio;
 
         while (n->prox != NULL)
@@ -92,8 +90,6 @@ void mostrar(BigInt *l)
                 printf("%d", n->valor * (-1));
             }
         }
-
-        printf("]");
     }
 }
 
@@ -338,7 +334,7 @@ int converteSinal(BigInt *l)
         while (n != NULL)
         {
             if (n->valor > 0)
-                n->valor = n->valor * (-1); // se o número é positivo, vira negativo e n passa pro anterior
+                n->valor = n->valor * (-1); // se o número é positivo, vira negativo
             n = n->ant;
         }
     }
@@ -360,7 +356,7 @@ int removeZero(BigInt *l)
         n = n->prox;
     }
 
-    while (n != NULL && tamanho(l) != 1)
+    while (tamanho(l) != 1)
     {
         if (n->valor == 0)
         { // se for zero, vai pro digito anterior e o remove
@@ -378,10 +374,10 @@ int removeZero(BigInt *l)
 
 int soma(BigInt *l1, BigInt *l2, BigInt *l3)
 {
-    if (l3 == NULL)
+    if (l3 == NULL || l1 == NULL || l2 == NULL)
         return 1;
-    if (l1 == NULL || l2 == NULL)
-        return 2;
+    // if (listaVazia(l1) == 0 || listaVazia(l2) == 0)
+    //     return 2;
     if (checaSinal(l1) == 1 && checaSinal(l2) == -1)
     {
         BigInt *l4 = criar();
@@ -455,11 +451,13 @@ int subtracao(BigInt *l1, BigInt *l2, BigInt *l3)
         return 0;
     }
 
+    BigInt *l5 = criar();
+
     if (checaSinal(l1) == -1 && checaSinal(l2) == -1)
     {
         copia(l2, l4);
         trocaSinal(l4);
-        BigInt *l5 = criar();
+        
         copia(l1, l5);
         trocaSinal(l5);
         subtracao(l4, l5, l3);
@@ -469,14 +467,15 @@ int subtracao(BigInt *l1, BigInt *l2, BigInt *l3)
     }
 
     copia(l1,l4);
+    copia(l2,l5);
 
-    No *n = maior(l4, l2)->inicio; // pega o maior número
+    No *n = maior(l4, l5)->inicio; // pega o maior número
     No *m, *extra;
 
     int ordem = 0;
 
     if (n == l4->inicio)
-        m = l2->inicio; // m pega o outro número
+        m = l5->inicio; // m pega o outro número
     else
     {
         m = l4->inicio;
@@ -525,6 +524,7 @@ int subtracao(BigInt *l1, BigInt *l2, BigInt *l3)
         trocaSinal(l3); // se o maior número era o subtraendo quer dizer que a subtração foi feita "ao contrário", por isso precisamos inverter o resultado
 
     limpar(l4);
+    limpar(l5);
 
     return 0;
 }
@@ -544,7 +544,7 @@ BigInt *maior(BigInt *l1, BigInt *l2)
 
         int n, m, i = tamanho(l1) - 1;
 
-        while (i > 0)
+        while (i >= 0)
         { // vai até o último digíto
             buscarPosicao(l1,i,&n);
             buscarPosicao(l2,i,&m);
